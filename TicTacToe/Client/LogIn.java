@@ -8,11 +8,11 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class LogIn implements ActionListener {
-	private JFrame frame;
-	private JPanel panel;
-	private JTextArea log;
+	private static JFrame frame;
+	private static JPanel panel;
+	private static JTextArea log;
 	private JTextField host, port;
-	private JScrollPane scrl;
+	private static JScrollPane scrl;
 
 	LogIn() {
 
@@ -41,10 +41,15 @@ public class LogIn implements ActionListener {
 		frame.add(scrl, BorderLayout.PAGE_START);
 	}
 
-	private void hideAll() {
+	static void hideAll() {
 		panel.setVisible(false);
 		scrl.setVisible(false);
 		log.setText("");
+	}
+
+	static void goToField() {
+		hideAll();
+		Field field = new Field(frame);
 	}
 
 	private void showAll() {
@@ -52,15 +57,18 @@ public class LogIn implements ActionListener {
 		scrl.setVisible(true);
 	}
 
-	private void setLogText(String msg) {
+	static void setLogText(String msg) {
 		log.append(msg + "\n");
 	}
 
 	public void actionPerformed(ActionEvent ae) {
-		String tmp = host.getText() + ":" + port.getText();
-		setLogText(tmp);
-//		hideAll();
-
+		String hostArg = host.getText();
+		Connection adjust = null;
+		try {
+			int portArg = Integer.parseInt(port.getText());
+			adjust = new Connection(hostArg, portArg);
+		} catch (NumberFormatException exc) {
+			setLogText("Bad input!");
+		}
 	}
-
 }
