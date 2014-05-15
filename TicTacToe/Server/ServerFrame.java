@@ -46,6 +46,7 @@ class ServerFrame {
 			public void actionPerformed(ActionEvent ae) {
 				start.setEnabled(true);
 				stop.setEnabled(false);
+				CreateServer.closeServer();
 				thread.stop();
 			}
 		});

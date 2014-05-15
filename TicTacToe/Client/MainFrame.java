@@ -32,8 +32,11 @@ public class MainFrame {
 
 			@Override
 			public void windowClosing(WindowEvent arg0) {
-				System.out.println("wdwd");
-
+				try {
+					Connection.writeServer("close");
+				} catch (NullPointerException exc) {
+					System.out.println("End");
+				}
 			}
 
 			@Override
@@ -61,9 +64,9 @@ public class MainFrame {
 			}
 		});
 		frame.setLayout(new BorderLayout());
-//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
-		frame.setSize(300, 300);
+		frame.setSize(250, 273);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}

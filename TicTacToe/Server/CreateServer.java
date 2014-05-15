@@ -22,17 +22,18 @@ class Server implements Runnable {
 			out.println(myFigure);
 			String tmp = "";
 			while (in.hasNextLine()) {
-				if (CreateServer.checkIfFull())
-					CreateServer.notify(null, "r");
 				tmp = in.nextLine();
-				if (tmp.equals("stop!")) {
-					CreateServer.closeServer();
+				if (tmp.equals("close")) {
+					CreateServer.removeUser(s);
+					return;
 				}
 				int temp = Integer.parseInt(tmp);
 				if (CreateServer.checkSpot(temp)) {
 					out.println("t");
 					CreateServer.notify(s, tmp);
 				}
+				if (CreateServer.checkIfFull())
+					CreateServer.notify(null, "r");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -46,12 +47,23 @@ public class CreateServer {
 	static boolean field[] = new boolean[9];
 	private static List<Socket> userList = new ArrayList<Socket>();
 
+	static void removeUser(Socket usr) {
+		for (int a = 0; a < userList.size(); a++)
+			if (usr == userList.get(a)) {
+				userList.remove(a);
+				return;
+			}
+
+	}
+
 	static void notify(Socket except, String msg) throws IOException {
 		for (Socket get : userList)
 			if (except != get) {
 				PrintWriter stream = new PrintWriter(get.getOutputStream(),
 						true);
+				if(!msg.equals("r"))
 				stream.println("-" + msg);
+				else stream.println(msg);
 
 			}
 	}
@@ -60,15 +72,19 @@ public class CreateServer {
 		for (int a = 0; a < field.length; a++)
 			if (!field[a])
 				return false;
-		for (boolean b : field)
-			b = false;
+		for (int a = 0; a < field.length; a++)
+			field[a] = false;
 		return true;
 	}
 
 	static void closeServer() {
 		try {
-			for (Socket tmp : userList)
+			for (Socket tmp : userList) {
+				PrintWriter temp = new PrintWriter(tmp.getOutputStream(), true);
+				temp.println("closing");
+				temp.close();
 				tmp.close();
+			}
 			s.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -86,7 +102,7 @@ public class CreateServer {
 		return true;
 	}
 
-	public static void main(String[] args) {
+	CreateServer() {
 		int counter = 1;
 		char figure = 0;
 		try {
